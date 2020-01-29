@@ -5,11 +5,12 @@ import morgan from "morgan";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
-import { userRouter } from "./router";
-const app = expressMyass();
+import userRouter from "./routers/userRouter";
+import videoRouter from "./routers/videoRouter";
+import globalRouter from "./routers/globalRouter";
+import routes from "./routes";
 
-const handleHome = (req, res) => res.send("Hello from Home Thxs nodemon");
-const handleProfile = (req, res) => res.send("You're on my profile");
+const app = expressMyass();
 
 // middleware practice
 // use 메소드로 쓴 녀석들이 다 실행되고 나서야 route가 가능하다. 즉 미들웨어로 쿠키파서, 보디파서, 헬멧, 모건을 설치한 것이다.
@@ -19,11 +20,10 @@ app.use(bodyParser.urlencoded( {extended : true}) );
 app.use(helmet());
 app.use(morgan("dev"));
 
-// routing
-app.get("/", handleHome);
-app.get("/profile", handleProfile);
 // use를 쓴 이유는 /user에 접근하면 userRouter를 쓰겠다는 뜻이기 때문이다. 
 // 그리고 usesrRouter에는 여러가지 get메소드로 정의한 라우팅 장소가 존재하기 때문에 이들을 모두 접근 가능하다. 즉 /user/, /user/edit, /user/password 등등
-app.use("/user", userRouter);
+app.use(routes.home, globalRouter);
+app.use(routes.users, userRouter);
+app.use(routes.videos, videoRouter);
 
 export default app;
